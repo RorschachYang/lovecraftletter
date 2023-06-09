@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket 客户端</title>
+    <script type="text/javascript">
+        var socket;
+
+        function connect() {
+            var host = "ws://" + window.location.host + "/ws";
+            socket = new WebSocket(host);
+
+            socket.onopen = function(event) {
+                log("已连接到服务器");
+            };
+
+            socket.onmessage = function(event) {
+                log("收到消息：" + event.data);
+            };
+
+            socket.onclose = function(event) {
+                log("与服务器的连接已关闭");
+            };
+        }
+
+        function send() {
+            var message = document.getElementById("message").value;
+            socket.send(message);
+            log("已发送消息：" + message);
+        }
+
+        function log(message) {
+            var logElement = document.getElementById("log");
+            logElement.innerHTML += "<p>" + message + "</p>";
+        }
+    </script>
+</head>
+<body onload="connect()">
+    <h1>WebSocket 客户端</h1>
+    <div id="log"></div>
+    <input type="text" id="message" />
+    <button onclick="send()">发送消息</button>
+</body>
+</html>

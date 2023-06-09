@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>洛夫克拉夫特的来信</title>
+    <style>
+    </style>
+    <script type="text/javascript">
+        function createRoom() {
+            var playerName = document.getElementById("playerName").value;
+
+            if (playerName == "") {
+                alert("请输入名称");
+                return
+            }
+            // 构建请求体
+            var requestBody = {
+                "playerName": playerName
+            };
+
+            // 发送POST请求
+            fetch("/createRoom", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("HTTP error, status = " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    // 处理响应数据
+                    var roomCode = data.roomCode;
+                    var playerID = data.playerID;
+                    if (roomCode != "") {
+                        window.location.href = "/static/room.html?roomCode="+roomCode+"&playerID="+playerID;
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                    // 在此处处理错误，例如显示错误信息等
+                });
+        }
+
+        function joinRoom() {
+            var playerName = document.getElementById("playerName").value;
+            var roomCode = document.getElementById("roomCode").value
+
+            if (playerName == "") {
+                alert("请输入名称");
+                return
+            }
+            if (roomCode == "") {
+                alert("请输入名称");
+                return
+            }
+            // 构建请求体
+            var requestBody = {
+                "playerName": playerName,
+                "roomCode": roomCode,
+            };
+
+            // 发送POST请求
+            fetch("/joinRoom", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("HTTP error, status = " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    // 处理响应数据
+                    var playerID = data.playerID;
+                    if (roomCode != "") {
+                        window.location.href = "/static/room.html?roomCode="+roomCode+"&playerID="+playerID;
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                    // 在此处处理错误，例如显示错误信息等
+                });
+        }
+
+        function log(message) {
+            var logElement = document.getElementById("log");
+            logElement.innerHTML += "<p>" + message + "</p>";
+        }
+    </script>
+</head>
+
+<body>
+    <p>输入用户名</p>
+    <input type="text" id="playerName" />
+    <p>创建新房间</p>
+    <button onclick="createRoom()">创建房间</button>
+    <p>加入房间</p>
+    <input type="text" id="roomCode" />
+    <button onclick="joinRoom()">加入房间</button>
+    <div id="log"></div>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ChatRoom</title>
+    <script type="text/javascript">
+        function onLoad() {
+            getRoomCode();
+            connect();
+        };
+        function getRoomCode() {
+            const queryString = window.location.search; // 获取查询参数部分
+            const urlParams = new URLSearchParams(queryString); // 创建URLSearchParams对象
+
+            // 获取单个参数的值
+            const roomCode = urlParams.get('roomCode');
+            const playerID = urlParams.get('playerID');
+
+            log("用户id为:"+playerID+"房间号为:"+roomCode)
+        };
+
+        var socket;
+
+        function connect() {
+            var host = "ws://" + window.location.host + "/connectInRoom";
+            socket = new WebSocket(host);
+
+            socket.onopen = function(event) {
+                log("已连接到服务器");
+            };
+
+            socket.onmessage = function(event) {
+                log("收到消息：" + event.data);
+            };
+
+            socket.onclose = function(event) {
+                log("与服务器的连接已关闭");
+            };
+        };
+
+        function send() {
+            var message = document.getElementById("message").value;
+            socket.send(message);
+            log("已发送消息：" + message);
+        };
+
+        function log(message) {
+            var logElement = document.getElementById("log");
+            logElement.innerHTML += "<p>" + message + "</p>";
+        };
+    </script>
+</head>
+
+<body onload="getRoomCode()">
+    <div id="log"></div>
+    <input type="text" id="message" />
+    <button onclick="send()">发送消息</button>
+</body>
+
+</html>
